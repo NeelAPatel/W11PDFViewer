@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -7,6 +9,8 @@ using System.Threading.Tasks;
 using Windows.Data.Pdf;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -23,74 +27,113 @@ namespace W11PDFViewer
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Page , INotifyPropertyChanged
     {
         public MainPage()
         {
             this.InitializeComponent();
         }
 
-        private PdfDocument _myDocument { get; set; }
+        //private PdfDocument _myDocument { get; set; }
+
+        public ObservableCollection<BitmapImage> PdfPages { get; set; } = new ObservableCollection<BitmapImage>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Uri Source { get; set; }
 
 
 
-        private async Task OpenPDFAsync(Windows.Storage.StorageFile file)
-        {
-            if (file == null) throw new ArgumentNullException();
+        //private async Task OpenPDFAsync(Windows.Storage.StorageFile file)
+        //{
+        //    if (file == null) throw new ArgumentNullException();
 
-            _myDocument = await PdfDocument.LoadFromFileAsync(file);
-        }
+        //    _myDocument = await PdfDocument.LoadFromFileAsync(file);
+        //}
 
 
-        private async Task DisplayPage(uint pageIndex)
-        {
-            if (_myDocument == null)
-            {
-                throw new Exception("No document open.");
-            }
+        //private async Task DisplayPage(uint pageIndex)
+        //{
+        //    if (_myDocument == null)
+        //    {
+        //        throw new Exception("No document open.");
+        //    }
 
-            if (pageIndex >= _myDocument.PageCount)
-            {
-                throw new ArgumentOutOfRangeException($"Document has only {_myDocument.PageCount} pages.");
-            }
+        //    if (pageIndex >= _myDocument.PageCount)
+        //    {
+        //        throw new ArgumentOutOfRangeException($"Document has only {_myDocument.PageCount} pages.");
+        //    }
 
-            // Get the page you want to render.
-            var page = _myDocument.GetPage(pageIndex);
+        //    // Get the page you want to render.
+        //    var page = _myDocument.GetPage(pageIndex);
 
-            // Create an image to render into.
-            var image = new BitmapImage();
+        //    // Create an image to render into.
+        //    var image = new BitmapImage();
 
-            using (var stream = new InMemoryRandomAccessStream())
-            {
-                await page.RenderToStreamAsync(stream);
-                await image.SetSourceAsync(stream);
+        //    using (var stream = new InMemoryRandomAccessStream())
+        //    {
+        //        await page.RenderToStreamAsync(stream);
+        //        await image.SetSourceAsync(stream);
 
-                // Set the XAML `Image` control to display the rendered image.
-                PdfImage.Source = image;
-            }
-        }
+        //        // Set the XAML `Image` control to display the rendered image.
+        //        //PdfImage.Source = image;
+        //    }
+        //}
 
 
         private async void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
-            var filePicker = new Windows.Storage.Pickers.FileOpenPicker();
+            var filePicker = new FileOpenPicker();
             filePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
             filePicker.FileTypeFilter.Add(".pdf");
 
-            Windows.Storage.StorageFile file = await filePicker.PickSingleFileAsync();
+            StorageFile file = await filePicker.PickSingleFileAsync();
             if (file != null)
             {
-                this.FileName.Text = "File Name: " + file.Name;
-                this.Path.Text = "Picked folder: " + file.Path;
+                SetupPDFDisplay(file);
             }
             else
             {
                 this.Path.Text = "Operation cancelled.";
             }
-
-            //Open and display pdf
-            await OpenPDFAsync(file);
-            await DisplayPage(0);
         }
+        private async void SetupPDFDisplay(StorageFile file)
+        {
+
+
+            var uri = new Uri(file.Path);
+            this.FileName.Text = "File Name: " + file.Name;
+            this.Path.Text = "Picked folder: " + file.Path + "|||" + uri.ToString();
+
+            //this.Source = uri;
+            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Source)));\
+
+            PdfDocument pdfDoc = await PdfDocument.LoadFromFileAsync(file);
+
+            Load(pdfDoc);
+
+        }
+
+        async void Load(PdfDocument pdfDoc)
+        {
+            PdfPages.Clear();
+
+            for (uint i = 0; i < pdfDoc.PageCount; i++)
+            {
+                BitmapImage image = new BitmapImage();
+
+                var page = pdfDoc.GetPage(i);
+
+                using (InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream())
+                {
+                    await page.RenderToStreamAsync(stream);
+                    await image.SetSourceAsync(stream);
+                }
+
+                PdfPages.Add(image);
+            }
+        }
+
+        
     }
 }

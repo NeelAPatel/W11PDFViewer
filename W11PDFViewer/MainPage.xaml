@@ -9,73 +9,44 @@
     xmlns:controls="using:W11PDFViewer.CustomControls"
     mc:Ignorable="d"
     muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    x:Name="root">
 
 
-    <StackPanel>
-        <!-- Header bar-->
-        <CommandBar x:Name="CommandBar" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
-            <CommandBar.Content>
-                <Grid>
-                    <TextBlock x:Name="FileName" Text="FileName"/>
-                    <TextBlock x:Name="Path" Text="Path" Margin="0,19,0,-19"/>
-                </Grid>
-            </CommandBar.Content>
-
-            <AppBarSeparator/>
+    <Grid>
+        <CommandBar Background="Transparent" DefaultLabelPosition="Right" VerticalAlignment="Top" Margin="0,0,0,0">
             <AppBarButton x:Name="OpenFileButton" Click="OpenFileButton_Click" Icon="OpenFile" Label="Open"/>
         </CommandBar>
 
-        <!-- Content region-->
-        <!--<ScrollViewer>
-            <Image x:Name="PdfImage"/>
-        </ScrollViewer>-->
+        <ScrollViewer ZoomMode="Enabled"
+            VerticalScrollMode="Enabled" 
+                      HorizontalScrollMode="Enabled" 
+                      HorizontalScrollBarVisibility="Auto" 
+                      VerticalScrollBarVisibility="Auto" Margin="0,53,0,53">
+            <ItemsControl ItemsSource="{Binding PdfPages, ElementName=root}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Image Source="{Binding}" Margin="0 2" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        
+        
 
-        <Grid>
-            <!--<controls:PdfViewerCtrl
-            AutoLoad="True"
-            Source="{x:Bind Source, Mode=OneWay}" 
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch"
-            IsZoomEnabled="true" Height="752" Width="752"/>-->
 
-
-        </Grid>
-
-        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" x:Name="Grid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <StackPanel>
-                <Button Content="Local PDF"/>
-                <Button Content="Remote PDF" />
-            </StackPanel>
-            <ScrollViewer ZoomMode="Enabled" Background="DarkGray" Grid.Column="1">
-                <ItemsControl ItemsSource="{Binding PdfPages, ElementName=root}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding}" Margin="0 2" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-        </Grid>
-
-        <!-- Bottom bar-->
-        <CommandBar x:Name="BottomBar" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
+        <CommandBar VerticalAlignment="Bottom" Background="Transparent">
             <CommandBar.Content>
-                <Grid>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="txt_CurrentPage" Text="Current page"/>
-                        <TextBlock x:Name="txt_pageOf" Text=" of"/>
-                        <TextBlock x:Name="txt_TotalPages" Text=" Total Pages"/>
-                    </StackPanel>
-                </Grid>
+                <StackPanel Orientation="Vertical" Width="300">
+                    <TextBlock x:Name="FileName" Text="File Name"></TextBlock>
+                    <TextBlock x:Name="Path" Text="File Path"></TextBlock>
+                </StackPanel>
             </CommandBar.Content>
         </CommandBar>
 
+        <!-- Bottom bar-->
 
-    </StackPanel>
+
+    </Grid>
 
 </Page>

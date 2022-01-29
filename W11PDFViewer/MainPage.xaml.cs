@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Data.Pdf;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -32,7 +33,10 @@ namespace W11PDFViewer
         public MainPage()
         {
             this.InitializeComponent();
+           
         }
+
+
 
         //private PdfDocument _myDocument { get; set; }
 

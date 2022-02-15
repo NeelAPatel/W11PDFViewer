@@ -14,15 +14,21 @@
 
 
     <Grid>
-        <CommandBar Background="Transparent" DefaultLabelPosition="Right" VerticalAlignment="Top" Margin="0,0,0,0">
+        <CommandBar DefaultLabelPosition="Right" VerticalAlignment="Top">
             <AppBarButton x:Name="OpenFileButton" Click="OpenFileButton_Click" Icon="OpenFile" Label="Open"/>
+            <CommandBar.Content>
+                <Grid VerticalAlignment="Center" >
+                    <!-- <TextBlock x:Name="FileName" Text="File Name" Margin="0,5,0,5"></TextBlock>
+                    <TextBlock x:Name="Path" Text="File Path" Margin="0,24,0,-16">-->
+                </Grid>
+            </CommandBar.Content>
         </CommandBar>
 
         <ScrollViewer ZoomMode="Enabled"
             VerticalScrollMode="Enabled" 
                       HorizontalScrollMode="Enabled" 
                       HorizontalScrollBarVisibility="Auto" 
-                      VerticalScrollBarVisibility="Auto" Margin="0,53,0,53">
+                      VerticalScrollBarVisibility="Auto" Margin="0,48,0,0">
             <ItemsControl ItemsSource="{Binding PdfPages, ElementName=root}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -31,20 +37,20 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        
-        
 
 
-        <CommandBar VerticalAlignment="Bottom" Background="Transparent">
+
+
+
+
+        <!-- Bottom bar <CommandBar VerticalAlignment="Bottom">
             <CommandBar.Content>
                 <StackPanel Orientation="Vertical" Width="300">
                     <TextBlock x:Name="FileName" Text="File Name"></TextBlock>
                     <TextBlock x:Name="Path" Text="File Path"></TextBlock>
                 </StackPanel>
             </CommandBar.Content>
-        </CommandBar>
-
-        <!-- Bottom bar-->
+        </CommandBar>-->
 
 
     </Grid>

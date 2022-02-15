@@ -96,18 +96,19 @@ namespace W11PDFViewer
             {
                 SetupPDFDisplay(file);
             }
-            else
-            {
-                this.Path.Text = "Operation cancelled.";
-            }
         }
         private async void SetupPDFDisplay(StorageFile file)
         {
 
 
             var uri = new Uri(file.Path);
-            this.FileName.Text = "File Name: " + file.Name;
-            this.Path.Text = "Picked folder: " + file.Path + "|||" + uri.ToString();
+
+            //set window title
+            var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+            appView.Title = file.Name;
+
+            //this.FileName.Text = "File Name: " + file.Name;
+            //this.Path.Text = "Picked folder: " + file.Path + "|||" + uri.ToString();
 
             //this.Source = uri;
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Source)));\
